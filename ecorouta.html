@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRuta - Sistema de Logística</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            padding: 0;
+            overflow-x: auto;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            padding: 0 20px;
+            gap: 5px;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            padding: 15px 18px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav button:hover {
+            background: #e8e8e8;
+            color: #667eea;
+        }
+
+        nav button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        main {
+            padding: 30px 20px;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        input, select, textarea {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button.secondary {
+            background: #e8e8e8;
+            color: #333;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button.secondary:hover {
+            background: #d8d8d8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-warehouse {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-route {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 4px;
+            color: #155724;
+            margin-top: 15px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            border-radius: 4px;
+            color: #721c24;
+            margin-top: 15px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+        }
+
+        .courier-item {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .route-step {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            gap: 15px;
+        }
+
+        .route-marker {
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .location-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .location-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .coordinates {
+            font-family: monospace;
+            font-size: 1.1em;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+            }
+
+            nav button {
+                padding: 10px 12px;
+                font-size: 0.8em;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><img src="images/leaf.svg" alt="EcoRuta" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 10px;"> EcoRuta</h1>
+            <p>Sistema de Gestión de Logística Sostenible</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><button class="nav-btn active" data-section="register"><img src="images/register.svg" alt="Registrar" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Registrar Paquete</button></li>
+                <li><button class="nav-btn" data-section="list"><img src="images/package.svg" alt="Paquetes" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Ver Paquetes</button></li>
+                <li><button class="nav-btn" data-section="search"><img src="images/search.svg" alt="Buscar" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Buscar Paquete</button></li>
+                <li><button class="nav-btn" data-section="assign"><img src="images/user.svg" alt="Asignar" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Asignar Courier</button></li>
+                <li><button class="nav-btn" data-section="routes"><img src="images/map.svg" alt="Rutas" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Ver Rutas</button></li>
+                <li><button class="nav-btn" data-section="update-status"><img src="images/chart.svg" alt="Estado" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Actualizar Estado</button></li>
+                <li><button class="nav-btn" data-section="confirm"><img src="images/check.svg" alt="Confirmar" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Confirmar Entrega</button></li>
+                <li><button class="nav-btn" data-section="couriers"><img src="images/users.svg" alt="Couriers" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Gestión de Couriers</button></li>
+                <li><button class="nav-btn" data-section="history"><img src="images/history.svg" alt="Historial" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Historial de Entregas</button></li>
+                <li><button class="nav-btn" data-section="location"><img src="images/location.svg" alt="Ubicación" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Ubicación Courier</button></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Caso de Uso 1: Registrar Paquete -->
+            <section id="register" class="active">
+                <h2 class="section-title"><img src="images/register.svg" alt="Registrar" style="width: 24px; height: 24px;"> Registrar Paquete</h2>
+                <div class="card">
+                    <form id="registerForm">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="senderName">Nombre Remitente</label>
+                                <input type="text" id="senderName" required placeholder="Ej: Juan López">
+                            </div>
+                            <div class="form-group">
+                                <label for="receiverName">Nombre Destinatario</label>
+                                <input type="text" id="receiverName" required placeholder="Ej: María García">
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="senderPhone">Teléfono Remitente</label>
+                                <input type="tel" id="senderPhone" required placeholder="+34 123 456 789">
+                            </div>
+                            <div class="form-group">
+                                <label for="receiverPhone">Teléfono Destinatario</label>
+                                <input type="tel" id="receiverPhone" required placeholder="+34 987 654 321">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Dirección de Entrega</label>
+                            <input type="text" id="address" required placeholder="Ej: Calle Principal 123, Apartado 4B, Madrid">
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="weight">Peso (kg)</label>
+                                <input type="number" id="weight" required min="0.1" step="0.1" placeholder="Ej: 2.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Descripción del Paquete</label>
+                                <input type="text" id="description" required placeholder="Ej: Libros y material de oficina">
+                            </div>
+                        </div>
+                        <button type="submit" class="primary">📦 Registrar Paquete</button>
+                    </form>
+                    <div id="registerMessage"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 2: Ver Lista de Paquetes -->
+            <section id="list">
+                <h2 class="section-title"><img src="images/package.svg" alt="Paquetes" style="width: 24px; height: 24px;"> Lista de Paquetes</h2>
+                <div class="card">
+                    <div id="packageTableContainer"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 3: Buscar Paquete por Código de Seguimiento -->
+            <section id="search">
+                <h2 class="section-title"><img src="images/search.svg" alt="Buscar" style="width: 24px; height: 24px;"> Buscar Paquete</h2>
+                <div class="card">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Ingresa el código de seguimiento (ej: PKG001)">
+                        <button class="primary" onclick="searchPackage()">🔍 Buscar</button>
+                    </div>
+                    <div id="searchResult"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 4: Asignar Paquete a Courier -->
+            <section id="assign">
+                <h2 class="section-title"><img src="images/user.svg" alt="Asignar" style="width: 24px; height: 24px;"> Asignar Paquete a Courier</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="packageSelectAssign">Seleccionar Paquete</label>
+                        <select id="packageSelectAssign" onchange="loadPackageDetailsForAssign()">
+                            <option value="">-- Selecciona un paquete --</option>
+                        </select>
+                    </div>
+                    <div id="packageDetailsAssign"></div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="courierSelect">Seleccionar Courier</label>
+                        <select id="courierSelect">
+                            <option value="">-- Selecciona un courier --</option>
+                        </select>
+                    </div>
+                    <button class="primary" onclick="assignPackageToCourier()" style="margin-top: 15px;">✅ Asignar Courier</button>
+                    <div id="assignMessage"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 5: Ver Rutas de Entrega -->
+            <section id="routes">
+                <h2 class="section-title"><img src="images/map.svg" alt="Rutas" style="width: 24px; height: 24px;"> Rutas de Entrega</h2>
+                <div class="card">
+                    <div id="routesContainer"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 6: Actualizar Estado de Paquete -->
+            <section id="update-status">
+                <h2 class="section-title"><img src="images/chart.svg" alt="Estado" style="width: 24px; height: 24px;"> Actualizar Estado del Paquete</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="packageSelectStatus">Seleccionar Paquete</label>
+                        <select id="packageSelectStatus" onchange="loadPackageDetailsForStatus()">
+                            <option value="">-- Selecciona un paquete --</option>
+                        </select>
+                    </div>
+                    <div id="packageDetailsStatus"></div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="statusSelect">Nuevo Estado</label>
+                        <select id="statusSelect">
+                            <option value="">-- Selecciona un estado --</option>
+                            <option value="In Warehouse">En Almacén</option>
+                            <option value="In Route">En Ruta</option>
+                            <option value="Delivered">Entregado</option>
+                            <option value="Failed">Entrega Fallida</option>
+                        </select>
+                    </div>
+                    <button class="primary" onclick="updatePackageStatus()" style="margin-top: 15px;">🔄 Actualizar Estado</button>
+                    <div id="updateStatusMessage"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 7: Confirmar Entrega -->
+            <section id="confirm">
+                <h2 class="section-title"><img src="images/check.svg" alt="Confirmar" style="width: 24px; height: 24px;"> Confirmar Entrega</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="packageSelectConfirm">Seleccionar Paquete para Confirmar</label>
+                        <select id="packageSelectConfirm" onchange="loadPackageDetailsForConfirm()">
+                            <option value="">-- Selecciona un paquete --</option>
+                        </select>
+                    </div>
+                    <div id="packageDetailsConfirm"></div>
+                    <button class="primary" onclick="confirmDelivery()" style="margin-top: 15px;">✅ Confirmar Entrega</button>
+                    <div id="confirmMessage"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 8: Gestión de Couriers -->
+            <section id="couriers">
+                <h2 class="section-title"><img src="images/users.svg" alt="Couriers" style="width: 24px; height: 24px;"> Gestión de Couriers</h2>
+                <div class="card">
+                    <div id="couriersTableContainer"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 9: Historial de Entregas -->
+            <section id="history">
+                <h2 class="section-title"><img src="images/history.svg" alt="Historial" style="width: 24px; height: 24px;"> Historial de Entregas</h2>
+                <div class="card">
+                    <div id="historyTableContainer"></div>
+                </div>
+            </section>
+
+            <!-- Caso de Uso 10: Ubicación del Courier (Simulación de Mapa) -->
+            <section id="location">
+                <h2 class="section-title">📍 Ubicación del Courier</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="courierSelectLocation">Seleccionar Courier</label>
+                        <select id="courierSelectLocation" onchange="loadCourierLocation()">
+                            <option value="">-- Selecciona un courier --</option>
+                        </select>
+                    </div>
+                    <div id="locationContainer"></div>
+                    <button class="primary" onclick="updateCourierLocation()" style="margin-top: 15px;">🔄 Actualizar Ubicación</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // ============ MOCK DATA ============
+        const mockCouriers = [
+            { id: 1, name: 'Carlos Rodríguez', phone: '+34 600 111 222', vehicle: 'Bicicleta', status: 'Activo', lat: 40.4168, lng: -3.7038 },
+            { id: 2, name: 'Ana Martínez', phone: '+34 600 333 444', vehicle: 'Moto', status: 'Activo', lat: 40.4200, lng: -3.7100 },
+            { id: 3, name: 'Pedro García', phone: '+34 600 555 666', vehicle: 'Furgoneta', status: 'Activo', lat: 40.4100, lng: -3.6900 },
+            { id: 4, name: 'Laura Fernández', phone: '+34 600 777 888', vehicle: 'Bicicleta', status: 'Inactivo', lat: 40.4300, lng: -3.7200 }
+        ];
+
+        let mockPackages = [
+            { id: 1, trackingCode: 'PKG001', sender: 'Empresa ABC', receiver: 'Cliente X', address: 'Calle Principal 123, Madrid', weight: 2.5, description: 'Libros', status: 'In Warehouse', courierId: null, createdAt: '2026-03-08' },
+            { id: 2, trackingCode: 'PKG002', sender: 'Tienda Online', receiver: 'Cliente Y', address: 'Avenida Central 456, Barcelona', weight: 1.2, description: 'Ropa', status: 'In Route', courierId: 1, createdAt: '2026-03-08' },
+            { id: 3, trackingCode: 'PKG003', sender: 'Distribuidor Z', receiver: 'Cliente Z', address: 'Plaza Mayor 789, Valencia', weight: 5.0, description: 'Electrónica', status: 'Delivered', courierId: 2, createdAt: '2026-03-07' },
+            { id: 4, trackingCode: 'PKG004', sender: 'Empresa DEF', receiver: 'Cliente W', address: 'Calle Secundaria 321, Sevilla', weight: 3.3, description: 'Muebles', status: 'In Warehouse', courierId: null, createdAt: '2026-03-09' },
+            { id: 5, trackingCode: 'PKG005', sender: 'Tienda XYZ', receiver: 'Cliente V', address: 'Boulevard Moderno 654, Bilbao', weight: 0.8, description: 'Accesorios', status: 'In Route', courierId: 3, createdAt: '2026-03-09' }
+        ];
+
+        const mockRoutes = [
+            { id: 1, courierId: 1, courierName: 'Carlos Rodríguez', addresses: ['Calle Principal 123, Madrid', 'Calle Secundaria 456, Madrid', 'Avenida del Parque 789, Madrid'], packageCount: 3 },
+            { id: 2, courierId: 2, courierName: 'Ana Martínez', addresses: ['Avenida Central 456, Barcelona', 'Paseo Marítimo 123, Barcelona'], packageCount: 2 },
+            { id: 3, courierId: 3, courierName: 'Pedro García', addresses: ['Boulevard Moderno 654, Bilbao', 'Calle del Comercio 789, Bilbao', 'Plaza Central 321, Bilbao', 'Avenida Industrial 654, Bilbao'], packageCount: 4 }
+        ];
+
+        // ============ FUNCIONES AUXILIARES ============
+        function generateTrackingCode() {
+            return 'PKG' + String(mockPackages.length + 1).padStart(3, '0');
+        }
+
+        function getStatusColor(status) {
+            const statusMap = {
+                'In Warehouse': 'status-warehouse',
+                'In Route': 'status-route',
+                'Delivered': 'status-delivered',
+                'Failed': 'status-failed'
+            };
+            return statusMap[status] || 'status-warehouse';
+        }
+
+        function getStatusEmoji(status) {
+            const emojiMap = {
+                'In Warehouse': '📦',
+                'In Route': '🚚',
+                'Delivered': '✅',
+                'Failed': '❌'
+            };
+            return emojiMap[status] || '❓';
+        }
+
+        function getCourierById(courierId) {
+            return mockCouriers.find(c => c.id === courierId);
+        }
+
+        function getPackageById(packageId) {
+            return mockPackages.find(p => p.id === packageId);
+        }
+
+        // ============ NAVEGACIÓN ============
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const sectionId = this.dataset.section;
+                
+                // Remover clase active de todos los botones y secciones
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+                
+                // Añadir clase active
+                this.classList.add('active');
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Cargar datos cuando se abre una sección
+                loadSectionData(sectionId);
+            });
+        });
+
+        function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'list':
+                    renderPackageList();
+                    break;
+                case 'assign':
+                    populatePackageSelectForAssign();
+                    populateCourierSelect();
+                    break;
+                case 'routes':
+                    renderDeliveryRoutes();
+                    break;
+                case 'update-status':
+                    populatePackageSelectForStatus();
+                    break;
+                case 'confirm':
+                    populatePackageSelectForConfirm();
+                    break;
+                case 'couriers':
+                    renderCouriersList();
+                    break;
+                case 'history':
+                    renderDeliveryHistory();
+                    break;
+                case 'location':
+                    populateCourierSelectForLocation();
+                    break;
+            }
+        }
+
+        // ============ CASO DE USO 1: REGISTRAR PAQUETE ============
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newPackage = {
+                id: mockPackages.length + 1,
+                trackingCode: generateTrackingCode(),
+                sender: document.getElementById('senderName').value,
+                receiver: document.getElementById('receiverName').value,
+                address: document.getElementById('address').value,
+                weight: parseFloat(document.getElementById('weight').value),
+                description: document.getElementById('description').value,
+                status: 'In Warehouse',
+                courierId: null,
+                createdAt: new Date().toISOString().split('T')[0]
+            };
+
+            mockPackages.push(newPackage);
+
+            const messageDiv = document.getElementById('registerMessage');
+            messageDiv.innerHTML = `
+                <div class="success-message">
+                    ✅ Paquete registrado exitosamente!<br>
+                    <strong>Código de Seguimiento:</strong> ${newPackage.trackingCode}<br>
+                    <strong>Destinatario:</strong> ${newPackage.receiver}<br>
+                    <strong>Dirección:</strong> ${newPackage.address}
+                </div>
+            `;
+
+            this.reset();
+            setTimeout(() => { messageDiv.innerHTML = ''; }, 5000);
+        });
+
+        // ============ CASO DE USO 2: VER LISTA DE PAQUETES ============
+        function renderPackageList() {
+            const container = document.getElementById('packageTableContainer');
+            
+            if (mockPackages.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><p>No hay paquetes registrados</p></div>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Código</th><th>Remitente</th><th>Destinatario</th><th>Dirección</th><th>Peso (kg)</th><th>Estado</th><th>Courier</th><th>Fecha</th></tr></thead><tbody>';
+
+            mockPackages.forEach(pkg => {
+                const courier = pkg.courierId ? getCourierById(pkg.courierId) : null;
+                html += `
+                    <tr>
+                        <td><strong>${pkg.trackingCode}</strong></td>
+                        <td>${pkg.sender}</td>
+                        <td>${pkg.receiver}</td>
+                        <td>${pkg.address}</td>
+                        <td>${pkg.weight.toFixed(1)}</td>
+                        <td><span class="status-badge ${getStatusColor(pkg.status)}">${getStatusEmoji(pkg.status)} ${pkg.status}</span></td>
+                        <td>${courier ? courier.name : '-'}</td>
+                        <td>${pkg.createdAt}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ============ CASO DE USO 3: BUSCAR PAQUETE ============
+        function searchPackage() {
+            const trackingCode = document.getElementById('searchInput').value.toUpperCase();
+            const resultDiv = document.getElementById('searchResult');
+            resultDiv.innerHTML = '';
+
+            if (!trackingCode) {
+                resultDiv.innerHTML = '<div class="error-message">⚠️ Por favor, ingresa un código de seguimiento</div>';
+                return;
+            }
+
+            const pkg = mockPackages.find(p => p.trackingCode === trackingCode);
+
+            if (!pkg) {
+                resultDiv.innerHTML = '<div class="error-message">❌ Paquete no encontrado</div>';
+                return;
+            }
+
+            const courier = pkg.courierId ? getCourierById(pkg.courierId) : null;
+            resultDiv.innerHTML = `
+                <div class="info-box">
+                    <h3>📦 Detalles del Paquete</h3>
+                    <table style="width: 100%; margin-top: 15px;">
+                        <tr><td><strong>Código de Seguimiento:</strong></td><td>${pkg.trackingCode}</td></tr>
+                        <tr><td><strong>Remitente:</strong></td><td>${pkg.sender}</td></tr>
+                        <tr><td><strong>Destinatario:</strong></td><td>${pkg.receiver}</td></tr>
+                        <tr><td><strong>Dirección:</strong></td><td>${pkg.address}</td></tr>
+                        <tr><td><strong>Peso:</strong></td><td>${pkg.weight} kg</td></tr>
+                        <tr><td><strong>Descripción:</strong></td><td>${pkg.description}</td></tr>
+                        <tr><td><strong>Estado:</strong></td><td><span class="status-badge ${getStatusColor(pkg.status)}">${getStatusEmoji(pkg.status)} ${pkg.status}</span></td></tr>
+                        <tr><td><strong>Courier Asignado:</strong></td><td>${courier ? courier.name + ' (' + courier.vehicle + ')' : 'Sin asignar'}</td></tr>
+                        <tr><td><strong>Fecha de Registro:</strong></td><td>${pkg.createdAt}</td></tr>
+                    </table>
+                </div>
+            `;
+        }
+
+        // ============ CASO DE USO 4: ASIGNAR PAQUETE A COURIER ============
+        function populatePackageSelectForAssign() {
+            const select = document.getElementById('packageSelectAssign');
+            select.innerHTML = '<option value="">-- Selecciona un paquete --</option>';
+            
+            mockPackages.filter(p => p.status === 'In Warehouse').forEach(pkg => {
+                select.innerHTML += `<option value="${pkg.id}">${pkg.trackingCode} - ${pkg.receiver}</option>`;
+            });
+        }
+
+        function populateCourierSelect() {
+            const select = document.getElementById('courierSelect');
+            select.innerHTML = '<option value="">-- Selecciona un courier --</option>';
+            
+            mockCouriers.forEach(courier => {
+                select.innerHTML += `<option value="${courier.id}">${courier.name} (${courier.vehicle})</option>`;
+            });
+        }
+
+        function loadPackageDetailsForAssign() {
+            const packageId = parseInt(document.getElementById('packageSelectAssign').value);
+            const detailsDiv = document.getElementById('packageDetailsAssign');
+            detailsDiv.innerHTML = '';
+
+            if (!packageId) return;
+
+            const pkg = getPackageById(packageId);
+            if (pkg) {
+                detailsDiv.innerHTML = `
+                    <div class="info-box" style="margin-top: 15px;">
+                        <strong>Paquete:</strong> ${pkg.trackingCode}<br>
+                        <strong>Para:</strong> ${pkg.receiver}<br>
+                        <strong>Dirección:</strong> ${pkg.address}<br>
+                        <strong>Peso:</strong> ${pkg.weight} kg
+                    </div>
+                `;
+            }
+        }
+
+        function assignPackageToCourier() {
+            const packageId = parseInt(document.getElementById('packageSelectAssign').value);
+            const courierId = parseInt(document.getElementById('courierSelect').value);
+            const messageDiv = document.getElementById('assignMessage');
+            messageDiv.innerHTML = '';
+
+            if (!packageId || !courierId) {
+                messageDiv.innerHTML = '<div class="error-message">⚠️ Debe seleccionar paquete y courier</div>';
+                return;
+            }
+
+            const pkg = getPackageById(packageId);
+            const courier = getCourierById(courierId);
+
+            if (pkg && courier) {
+                pkg.courierId = courierId;
+                pkg.status = 'In Route';
+                
+                messageDiv.innerHTML = `
+                    <div class="success-message">
+                        ✅ Paquete asignado exitosamente!<br>
+                        <strong>Paquete:</strong> ${pkg.trackingCode}<br>
+                        <strong>Courier:</strong> ${courier.name}<br>
+                        <strong>Vehículo:</strong> ${courier.vehicle}
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    populatePackageSelectForAssign();
+                }, 3000);
+            }
+        }
+
+        // ============ CASO DE USO 5: VER RUTAS DE ENTREGA ============
+        function renderDeliveryRoutes() {
+            const container = document.getElementById('routesContainer');
+
+            if (mockRoutes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🗺️</div><p>No hay rutas activas</p></div>';
+                return;
+            }
+
+            let html = '';
+
+            mockRoutes.forEach((route, index) => {
+                html += `
+                    <div class="card" style="background: white; border: 2px solid #667eea;">
+                        <h3>🚚 Ruta ${index + 1} - ${route.courierName}</h3>
+                        <p><strong>Courier:</strong> ${route.courierName}</p>
+                        <p><strong>Paquetes en ruta:</strong> ${route.packageCount}</p>
+                        <h4 style="margin-top: 15px; color: #667eea;">Direcciones a entregar:</h4>
+                `;
+
+                route.addresses.forEach((address, i) => {
+                    html += `
+                        <div class="route-step">
+                            <div class="route-marker">${i + 1}</div>
+                            <div>
+                                <strong>${address}</strong><br>
+                                <small style="color: #666;">Entrega próxima</small>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ============ CASO DE USO 6: ACTUALIZAR ESTADO ============
+        function populatePackageSelectForStatus() {
+            const select = document.getElementById('packageSelectStatus');
+            select.innerHTML = '<option value="">-- Selecciona un paquete --</option>';
+            
+            mockPackages.forEach(pkg => {
+                select.innerHTML += `<option value="${pkg.id}">${pkg.trackingCode} - ${pkg.receiver} (${pkg.status})</option>`;
+            });
+        }
+
+        function loadPackageDetailsForStatus() {
+            const packageId = parseInt(document.getElementById('packageSelectStatus').value);
+            const detailsDiv = document.getElementById('packageDetailsStatus');
+            detailsDiv.innerHTML = '';
+
+            if (!packageId) return;
+
+            const pkg = getPackageById(packageId);
+            if (pkg) {
+                const courier = pkg.courierId ? getCourierById(pkg.courierId) : null;
+                detailsDiv.innerHTML = `
+                    <div class="info-box" style="margin-top: 15px;">
+                        <strong>Paquete:</strong> ${pkg.trackingCode}<br>
+                        <strong>Para:</strong> ${pkg.receiver}<br>
+                        <strong>Estado Actual:</strong> <span class="status-badge ${getStatusColor(pkg.status)}">${getStatusEmoji(pkg.status)} ${pkg.status}</span><br>
+                        <strong>Courier:</strong> ${courier ? courier.name : 'Sin asignar'}
+                    </div>
+                `;
+            }
+        }
+
+        function updatePackageStatus() {
+            const packageId = parseInt(document.getElementById('packageSelectStatus').value);
+            const newStatus = document.getElementById('statusSelect').value;
+            const messageDiv = document.getElementById('updateStatusMessage');
+            messageDiv.innerHTML = '';
+
+            if (!packageId || !newStatus) {
+                messageDiv.innerHTML = '<div class="error-message">⚠️ Debe seleccionar paquete y estado</div>';
+                return;
+            }
+
+            const pkg = getPackageById(packageId);
+            if (pkg) {
+                const oldStatus = pkg.status;
+                pkg.status = newStatus;
+
+                messageDiv.innerHTML = `
+                    <div class="success-message">
+                        ✅ Estado actualizado exitosamente!<br>
+                        <strong>Paquete:</strong> ${pkg.trackingCode}<br>
+                        <strong>Estado anterior:</strong> ${oldStatus}<br>
+                        <strong>Nuevo estado:</strong> <span class="status-badge ${getStatusColor(newStatus)}">${getStatusEmoji(newStatus)} ${newStatus}</span>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    populatePackageSelectForStatus();
+                }, 3000);
+            }
+        }
+
+        // ============ CASO DE USO 7: CONFIRMAR ENTREGA ============
+        function populatePackageSelectForConfirm() {
+            const select = document.getElementById('packageSelectConfirm');
+            select.innerHTML = '<option value="">-- Selecciona un paquete --</option>';
+            
+            mockPackages.filter(p => p.status === 'In Route' && p.courierId).forEach(pkg => {
+                select.innerHTML += `<option value="${pkg.id}">${pkg.trackingCode} - ${pkg.receiver}</option>`;
+            });
+        }
+
+        function loadPackageDetailsForConfirm() {
+            const packageId = parseInt(document.getElementById('packageSelectConfirm').value);
+            const detailsDiv = document.getElementById('packageDetailsConfirm');
+            detailsDiv.innerHTML = '';
+
+            if (!packageId) return;
+
+            const pkg = getPackageById(packageId);
+            if (pkg) {
+                const courier = getCourierById(pkg.courierId);
+                detailsDiv.innerHTML = `
+                    <div class="info-box" style="margin-top: 15px;">
+                        <strong>Paquete:</strong> ${pkg.trackingCode}<br>
+                        <strong>Destinatario:</strong> ${pkg.receiver}<br>
+                        <strong>Dirección:</strong> ${pkg.address}<br>
+                        <strong>Courier:</strong> ${courier.name}<br>
+                        <strong>Estado Actual:</strong> <span class="status-badge ${getStatusColor(pkg.status)}">${getStatusEmoji(pkg.status)} ${pkg.status}</span>
+                    </div>
+                `;
+            }
+        }
+
+        function confirmDelivery() {
+            const packageId = parseInt(document.getElementById('packageSelectConfirm').value);
+            const messageDiv = document.getElementById('confirmMessage');
+            messageDiv.innerHTML = '';
+
+            if (!packageId) {
+                messageDiv.innerHTML = '<div class="error-message">⚠️ Debe seleccionar un paquete</div>';
+                return;
+            }
+
+            const pkg = getPackageById(packageId);
+            if (pkg) {
+                pkg.status = 'Delivered';
+
+                messageDiv.innerHTML = `
+                    <div class="success-message">
+                        ✅ Entrega confirmada exitosamente!<br>
+                        <strong>Paquete:</strong> ${pkg.trackingCode}<br>
+                        <strong>Destinatario:</strong> ${pkg.receiver}<br>
+                        <strong>Dirección:</strong> ${pkg.address}<br>
+                        <strong>Entregado por:</strong> ${getCourierById(pkg.courierId).name}<br>
+                        <strong>Hora:</strong> ${new Date().toLocaleTimeString()}
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    populatePackageSelectForConfirm();
+                }, 4000);
+            }
+        }
+
+        // ============ CASO DE USO 8: GESTIÓN DE COURIERS ============
+        function renderCouriersList() {
+            const container = document.getElementById('couriersTableContainer');
+            
+            let html = '<table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Vehículo</th><th>Estado</th><th>Paquetes Activos</th></tr></thead><tbody>';
+
+            mockCouriers.forEach(courier => {
+                const activePkgs = mockPackages.filter(p => p.courierId === courier.id && (p.status === 'In Route' || p.status === 'In Warehouse')).length;
+                const statusBadge = courier.status === 'Activo' ? '<span class="status-badge" style="background: #d4edda; color: #155724;">✅ Activo</span>' : '<span class="status-badge" style="background: #f8d7da; color: #721c24;">❌ Inactivo</span>';
+
+                html += `
+                    <tr>
+                        <td><strong>${courier.name}</strong></td>
+                        <td>${courier.phone}</td>
+                        <td>${courier.vehicle}</td>
+                        <td>${statusBadge}</td>
+                        <td>${activePkgs}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ============ CASO DE USO 9: HISTORIAL DE ENTREGAS ============
+        function renderDeliveryHistory() {
+            const container = document.getElementById('historyTableContainer');
+            
+            const deliveredPackages = mockPackages.filter(p => p.status === 'Delivered');
+
+            if (deliveredPackages.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📜</div><p>No hay entregas completadas</p></div>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Código</th><th>Destinatario</th><th>Dirección</th><th>Courier</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>';
+
+            deliveredPackages.forEach(pkg => {
+                const courier = getCourierById(pkg.courierId);
+                html += `
+                    <tr>
+                        <td><strong>${pkg.trackingCode}</strong></td>
+                        <td>${pkg.receiver}</td>
+                        <td>${pkg.address}</td>
+                        <td>${courier ? courier.name : '-'}</td>
+                        <td>${pkg.createdAt}</td>
+                        <td><span class="status-badge ${getStatusColor(pkg.status)}">${getStatusEmoji(pkg.status)} ${pkg.status}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ============ CASO DE USO 10: UBICACIÓN COURIER ============
+        function populateCourierSelectForLocation() {
+            const select = document.getElementById('courierSelectLocation');
+            select.innerHTML = '<option value="">-- Selecciona un courier --</option>';
+            
+            mockCouriers.forEach(courier => {
+                select.innerHTML += `<option value="${courier.id}">${courier.name} (${courier.vehicle})</option>`;
+            });
+        }
+
+        function loadCourierLocation() {
+            const courierId = parseInt(document.getElementById('courierSelectLocation').value);
+            const container = document.getElementById('locationContainer');
+            container.innerHTML = '';
+
+            if (!courierId) return;
+
+            const courier = getCourierById(courierId);
+            if (courier) {
+                container.innerHTML = `
+                    <div class="location-card">
+                        <h3>${courier.name}</h3>
+                        <p>${courier.vehicle} • ${courier.phone}</p>
+                        <div class="coordinates">
+                            📍 Latitud: ${courier.lat.toFixed(4)}°<br>
+                            📍 Longitud: ${courier.lng.toFixed(4)}°
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function updateCourierLocation() {
+            const courierId = parseInt(document.getElementById('courierSelectLocation').value);
+            
+            if (!courierId) {
+                alert('⚠️ Debe seleccionar un courier');
+                return;
+            }
+
+            const courier = getCourierById(courierId);
+            if (courier) {
+                // Simular cambio de ubicación
+                courier.lat = 40.4000 + Math.random() * 0.0300;
+                courier.lng = -3.7500 + Math.random() * 0.0300;
+                
+                loadCourierLocation();
+                
+                const alert = document.createElement('div');
+                alert.className = 'success-message';
+                alert.innerHTML = `✅ Ubicación del courier ${courier.name} actualizada!<br>Nueva ubicación: ${courier.lat.toFixed(4)}°, ${courier.lng.toFixed(4)}°`;
+                document.getElementById('locationContainer').appendChild(alert);
+                
+                setTimeout(() => alert.remove(), 3000);
+            }
+        }
+
+        // Inicializar selects al cargar la página
+        populateCourierSelect();
+        populateCourierSelectForLocation();
+    </script>
+</body>
+</html>
